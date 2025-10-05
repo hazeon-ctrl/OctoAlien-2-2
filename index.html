@@ -227,7 +227,7 @@
         const rect = canvas.getBoundingClientRect();
         const x = e.touches[0].clientX - rect.left;
         const y = e.touches[0].clientY - rect.top;
-        if (x < 80 && y > 630) {
+        if (x < 80 && y > 560 && y < 630) {
             if (game.charge.state === 'IDLE' && game.charge.cd <= 0) {
                 game.charge.state = 'CHARGING';
                 game.charge.time = 0;
@@ -319,7 +319,7 @@
             game.octo.x += game.octo.dir * 2;
             if (game.octo.x < 50 || game.octo.x > 350) game.octo.dir *= -1;
             game.octo.bombT += dt;
-            if (game.octo.bombT > 3.3) {
+            if (game.octo.bombT > 5.0) {
                 game.octo.bombT = 0;
                 game.oBombs.push({ x: game.octo.x, y: game.octo.y + 30, vy: 3, s: 12 });
             }
@@ -355,7 +355,7 @@
         // Update bricks
         game.bricks.forEach(b => {
             b.st += dt;
-            if (b.st > 1.7) {
+            if (b.st > 2.4) {
                 b.st = 0;
                 game.eBullets.push({ x: b.x, y: b.y + 10, vy: 4, t: 'brick' });
             }
@@ -668,7 +668,7 @@
         // Charge button
         const bs = 60;
         const bx = 10;
-        const by = 630;
+        const by = 560;
         if (game.charge.state === 'CHARGING') {
             ctx.fillStyle = `rgba(255, 255, 0, ${0.3 + 0.4 * (game.charge.time / 2)})`;
             ctx.shadowBlur = 20;
