@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>OCTO ALIEN - Retro Arcade Game</title>
+    <title>!.~~OCTO-ALIEN~..</title>
     <style>
         * {
             margin: 0;
@@ -321,7 +321,7 @@
             game.octo.bombT += dt;
             if (game.octo.bombT > 5.0) {
                 game.octo.bombT = 0;
-                game.oBombs.push({ x: game.octo.x, y: game.octo.y + 30, vy: 3, s: 12 });
+                game.oBombs.push({ x: game.octo.x, y: game.octo.y + 30, vy: 1.5, s: 12 });
             }
         }
 
@@ -357,7 +357,7 @@
             b.st += dt;
             if (b.st > 2.4) {
                 b.st = 0;
-                game.eBullets.push({ x: b.x, y: b.y + 10, vy: 4, t: 'brick' });
+                game.eBullets.push({ x: b.x, y: b.y + 10, vy: 2, t: 'brick' });
             }
         });
 
@@ -404,7 +404,7 @@
         if (game.charge.state === 'CHARGING') {
             game.charge.time = Math.min(game.charge.time + dt, 2);
         } else if (game.charge.state === 'LAUNCHED') {
-            game.charge.y -= 500 * dt;
+            game.charge.y -= 250 * dt;
             if (game.charge.y < -20) game.charge.state = 'DETONATING';
         } else if (game.charge.state === 'DETONATING') {
             const baseSize = 120;
