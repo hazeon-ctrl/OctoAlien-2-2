@@ -225,17 +225,24 @@
     canvas.addEventListener('touchstart', e => {
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
-        const x = e.touches[0].clientX - rect.left;
-        const y = e.touches[0].clientY - rect.top;
-        if (x < 80 && y > 560 && y < 630) {
-            if (game.charge.state === 'IDLE' && game.charge.cd <= 0) {
-                game.charge.state = 'CHARGING';
-                game.charge.time = 0;
-            } else if (game.charge.state === 'LAUNCHED') {
-                game.charge.state = 'DETONATING';
+
+        // Handle multiple touches
+        for (let i = 0; i < e.touches.length; i++) {
+            const x = e.touches[i].clientX - rect.left;
+            const y = e.touches[i].clientY - rect.top;
+
+            // Check if touching charge button area
+            if (x >= 0 && x <= 80 && y >= 550 && y <= 630) {
+                if (game.charge.state === 'IDLE' && game.charge.cd <= 0) {
+                    game.charge.state = 'CHARGING';
+                    game.charge.time = 0;
+                } else if (game.charge.state === 'LAUNCHED') {
+                    game.charge.state = 'DETONATING';
+                }
+            } else {
+                // Movement touch - set to most recent non-button touch
+                touchX = x;
             }
-        } else {
-            touchX = x;
         }
     });
 
