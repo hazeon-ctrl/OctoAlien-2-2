@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>!.~~OCTO-ALIEN~..</title>
+    <title>OCTO ALIEN - Retro Arcade Game</title>
     <style>
         * {
             margin: 0;
@@ -372,8 +372,7 @@
                 y: 280,
                 vx: left ? 3 : -3,
                 p: Math.random() * 6.28,
-                bt: 0.5,
-                hp: 3
+                bt: 0.5
             });
         }
 
@@ -389,7 +388,7 @@
             }
         });
 
-        game.bombers = game.bombers.filter(b => b.x > -60 && b.x < 460 && b.hp > 0);
+        game.bombers = game.bombers.filter(b => b.x > -60 && b.x < 460);
 
         // Update bullets
         game.pBullets.forEach(b => b.y += b.vy);
@@ -449,20 +448,19 @@
                     return false;
                 }
             }
-            for (let bm of game.bombers) {
+            for (let i = game.bombers.length - 1; i >= 0; i--) {
+                const bm = game.bombers[i];
                 if (Math.abs(b.x - bm.x) < 30 && Math.abs(b.y - bm.y) < 15) {
-                    bm.hp--;
+                    game.bombers.splice(i, 1);
+                    game.score += 50;
                     sound('hit');
-                    if (bm.hp <= 0) {
-                        game.score += 50;
-                        for (let i = 0; i < 8; i++) {
-                            const a = (6.28 * i) / 8;
-                            game.particles.push({
-                                x: bm.x, y: bm.y,
-                                vx: Math.cos(a) * 3, vy: Math.sin(a) * 3,
-                                life: 0.4, max: 0.4
-                            });
-                        }
+                    for (let j = 0; j < 8; j++) {
+                        const a = (6.28 * j) / 8;
+                        game.particles.push({
+                            x: bm.x, y: bm.y,
+                            vx: Math.cos(a) * 3, vy: Math.sin(a) * 3,
+                            life: 0.4, max: 0.4
+                        });
                     }
                     return false;
                 }
