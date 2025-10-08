@@ -413,6 +413,23 @@
             game.charge.zones.push({ x: game.charge.x, y: game.charge.y, w, h, t: 4 });
             sound('detonate');
             game.shake = 6;
+
+            // Destroy all enemy bullets and bombs in blast zone
+            for (let i = game.eBullets.length - 1; i >= 0; i--) {
+                const eb = game.eBullets[i];
+                if (Math.abs(eb.x - game.charge.x) < w/2 && Math.abs(eb.y - game.charge.y) < h/2) {
+                    game.eBullets.splice(i, 1);
+                    game.score += 1;
+                }
+            }
+            for (let i = game.oBombs.length - 1; i >= 0; i--) {
+                const ob = game.oBombs[i];
+                if (Math.abs(ob.x - game.charge.x) < w/2 && Math.abs(ob.y - game.charge.y) < h/2) {
+                    game.oBombs.splice(i, 1);
+                    game.score += 3;
+                }
+            }
+
             game.charge.state = 'IDLE';
             game.charge.cd = 5;
             for (let i = 0; i < 20; i++) {
@@ -432,6 +449,7 @@
 
         // Collisions - player bullets
         game.pBullets = game.pBullets.filter(b => {
+            // vs Octo
             if (Math.abs(b.x - game.octo.x) < 40 && Math.abs(b.y - game.octo.y) < 25) {
                 game.octo.health = Math.max(0, game.octo.health - 1);
                 game.score += 5;
@@ -439,6 +457,7 @@
                 game.shake = 2;
                 return false;
             }
+            // vs Bricks
             for (let i = game.bricks.length - 1; i >= 0; i--) {
                 const br = game.bricks[i];
                 if (Math.abs(b.x - br.x) < br.w/2 && Math.abs(b.y - br.y) < br.h/2) {
@@ -448,6 +467,7 @@
                     return false;
                 }
             }
+            // vs Bombers
             for (let i = game.bombers.length - 1; i >= 0; i--) {
                 const bm = game.bombers[i];
                 if (Math.abs(b.x - bm.x) < 30 && Math.abs(b.y - bm.y) < 15) {
@@ -460,6 +480,34 @@
                             x: bm.x, y: bm.y,
                             vx: Math.cos(a) * 3, vy: Math.sin(a) * 3,
                             life: 0.4, max: 0.4
+                        });
+                    }
+                    return false;
+                }
+            }
+            // vs Enemy bullets
+            for (let i = game.eBullets.length - 1; i >= 0; i--) {
+                const eb = game.eBullets[i];
+                if (Math.abs(b.x - eb.x) < 8 && Math.abs(b.y - eb.y) < 10) {
+                    game.eBullets.splice(i, 1);
+                    game.score += 2;
+                    sound('hit');
+                    return false;
+                }
+            }
+            // vs Octo bombs
+            for (let i = game.oBombs.length - 1; i >= 0; i--) {
+                const ob = game.oBombs[i];
+                if (Math.abs(b.x - ob.x) < 12 && Math.abs(b.y - ob.y) < 12) {
+                    game.oBombs.splice(i, 1);
+                    game.score += 5;
+                    sound('hit');
+                    for (let j = 0; j < 6; j++) {
+                        const a = (6.28 * j) / 6;
+                        game.particles.push({
+                            x: ob.x, y: ob.y,
+                            vx: Math.cos(a) * 2, vy: Math.sin(a) * 2,
+                            life: 0.3, max: 0.3
                         });
                     }
                     return false;
@@ -611,7 +659,7 @@
         game.pBullets.forEach(b => {
             ctx.fillStyle = '#ffff00';
             ctx.shadowColor = '#ffff00';
-            ctx.fillRect(b.x - 2, b.y - 6, 4, 12);
+            ctx.fillRect(b.x - 3, b.y - 6, 6, 12);
         });
         game.eBullets.forEach(b => {
             ctx.fillStyle = b.t === 'brick' ? '#ff8800' : '#8b0000';
